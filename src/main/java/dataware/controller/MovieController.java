@@ -37,14 +37,20 @@ public class MovieController {
     @RequestMapping("/findByYear")
     public Map findByYear(@RequestParam("year") int year) throws SQLException {
 
-        QueryTimer timer = new QueryTimer();
-        timer.start();
-        int count = mysqlService.countMovieByTime(year);
-        timer.end();
+        QueryTimer mysql_timer = new QueryTimer();
+        mysql_timer.start();
+        int mysql_count = mysqlService.countMovieByTime(year);
+        mysql_timer.end();
+
+        QueryTimer hive_timer = new QueryTimer();
+        hive_timer.start();
+        int hive_count = hiveService.countMovieByTime(year);
+        hive_timer.end();
 
         Map map = new HashMap();
-        map.put("count", count);
-        map.put("mysqlTime", timer.getRunTime());
+        map.put("count", mysql_count);
+        map.put("mysqlTime", mysql_timer.getRunTime());
+        map.put("hiveTime", hive_timer.getRunTime());
 
         return map;
     }
@@ -53,14 +59,20 @@ public class MovieController {
     @RequestMapping("/findByMonth")
     public Map findByMonth(@RequestParam("year") int year,
                            @RequestParam("month") int month) throws SQLException {
-        QueryTimer timer = new QueryTimer();
-        timer.start();
-        int count = mysqlService.countMovieByTime(year, month);
-        timer.end();
+        QueryTimer mysql_timer = new QueryTimer();
+        mysql_timer.start();
+        int mysql_count = mysqlService.countMovieByTime(year, month);
+        mysql_timer.end();
+
+        QueryTimer hive_timer = new QueryTimer();
+        hive_timer.start();
+        int hive_count = hiveService.countMovieByTime(year, month);
+        hive_timer.end();
 
         Map map = new HashMap();
-        map.put("count", count);
-        map.put("mysqlTime", timer.getRunTime());
+        map.put("count", mysql_count);
+        map.put("mysqlTime", mysql_timer.getRunTime());
+        map.put("hiveTime", hive_timer.getRunTime());
 
         return map;
     }
@@ -70,14 +82,20 @@ public class MovieController {
     public Map findByDay(@RequestParam("year") int year,
                          @RequestParam("month") int month,
                          @RequestParam("day") int day) throws SQLException {
-        QueryTimer timer = new QueryTimer();
-        timer.start();
-        int count = mysqlService.countMovieByTime(year, month, day);
-        timer.end();
+        QueryTimer mysql_timer = new QueryTimer();
+        mysql_timer.start();
+        int mysql_count = mysqlService.countMovieByTime(year, month, day);
+        mysql_timer.end();
+
+        QueryTimer hive_timer = new QueryTimer();
+        hive_timer.start();
+        int hive_count = hiveService.countMovieByTime(year, month, day);
+        hive_timer.end();
 
         Map map = new HashMap();
-        map.put("count", count);
-        map.put("mysqlTime", timer.getRunTime());
+        map.put("count", mysql_count);
+        map.put("mysqlTime", mysql_timer.getRunTime());
+        map.put("hiveTime", hive_timer.getRunTime());
 
         return map;
     }
@@ -85,21 +103,27 @@ public class MovieController {
     @ResponseBody
     @RequestMapping("/findByName")
     public Map findByName(@RequestParam("name") String name) throws SQLException {
-        QueryTimer timer = new QueryTimer();
-        timer.start();
-        List<Movie> movies = mysqlService.findMovieByName(name);
-        timer.end();
+        QueryTimer mysql_timer = new QueryTimer();
+        mysql_timer.start();
+        List<Movie> mysql_movies = mysqlService.findMovieByName(name);
+        mysql_timer.end();
+
+        QueryTimer hive_timer = new QueryTimer();
+        hive_timer.start();
+        List<Movie> hive_movies = hiveService.findMovieByName(name);
+        hive_timer.end();
 
         Map map = new HashMap();
 
         List<Map> moviemap = new ArrayList();
-        for (Movie movie : movies) {
+        for (Movie movie : mysql_movies) {
             Map temp = new HashMap();
             temp.put("title", movie.getTitle());
             moviemap.add(temp);
         }
         map.put("movie", moviemap);
-        map.put("mysqlTime", timer.getRunTime());
+        map.put("mysqlTime", mysql_timer.getRunTime());
+        map.put("hiveTime", hive_timer.getRunTime());
 
         return map;
     }
@@ -107,28 +131,60 @@ public class MovieController {
     @ResponseBody
     @RequestMapping("/findByActorName")
     public Map findByActorName(@RequestParam("name") String name) throws SQLException {
-        QueryTimer timer = new QueryTimer();
-        timer.start();
+        QueryTimer mysql_timer = new QueryTimer();
+        mysql_timer.start();
         List<Map> movies = mysqlService.findByActorName(name);
-        timer.end();
+        mysql_timer.end();
+
+        QueryTimer hive_timer = new QueryTimer();
+        hive_timer.start();
+        List<Map> hive_movies = hiveService.findByActorName(name);
+        hive_timer.end();
 
         Map map = new HashMap();
         map.put("movie", movies);
-        map.put("mysqlTime", timer.getRunTime());
+        map.put("mysqlTime", mysql_timer.getRunTime());
+        map.put("hiveTime", hive_timer.getRunTime());
         return map;
     }
 
     @ResponseBody
     @RequestMapping("/findByTypeName")
     public Map findByTypeName(@RequestParam("name") String name) throws SQLException {
-        QueryTimer timer = new QueryTimer();
-        timer.start();
+        QueryTimer mysql_timer = new QueryTimer();
+        mysql_timer.start();
         List<Map> movies = mysqlService.findByTypeName(name);
-        timer.end();
+        mysql_timer.end();
+
+        QueryTimer hive_timer = new QueryTimer();
+        hive_timer.start();
+        List<Map> hive_movies = hiveService.findByTypeName(name);
+        hive_timer.end();
 
         Map map = new HashMap();
         map.put("movie", movies);
-        map.put("mysqlTime", timer.getRunTime());
+        map.put("mysqlTime", mysql_timer.getRunTime());
+        map.put("hiveTime", hive_timer.getRunTime());
+        return map;
+    }
+
+    @ResponseBody
+    @RequestMapping("/countByTypeName")
+    public Map countByTypeName(@RequestParam("name") String name) throws SQLException {
+        QueryTimer mysql_timer = new QueryTimer();
+        mysql_timer.start();
+        int movie_count = mysqlService.countByTypeName(name);
+        mysql_timer.end();
+
+        QueryTimer hive_timer = new QueryTimer();
+        hive_timer.start();
+        int hive_count = hiveService.countByTypeName(name);
+        hive_timer.end();
+
+        Map map = new HashMap();
+        map.put("count", movie_count);
+        map.put("mysqlTime", mysql_timer.getRunTime());
+        map.put("hiveTime", hive_timer.getRunTime());
         return map;
     }
 }

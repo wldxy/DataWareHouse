@@ -27,4 +27,8 @@ public interface MovieService {
     List<Map> findByActorName(String actorName) throws SQLException;
 
     List<Map> findByTypeName(String typeName) throws SQLException;
+
+    List<Map> countByType() throws SQLException;
+
+    int countByTypeName(String name) throws SQLException;
 }

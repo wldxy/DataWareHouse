@@ -193,7 +193,8 @@ public class MovieServiceMysqlImpl implements MovieService {
     @Override
     public List<Map> findByTypeName(String typeName) throws SQLException {
         Connection connection = DataConnection.getConnection("mysql");
-        String str = "select movies.title from movies where wayfinding_1=?";
+        String str = "select count(*) from movie, type, movie_type " +
+                "where movie_type.typeid=type.id and type.name=? and movie.id=movie_type.movie_id";
         PreparedStatement statement = connection.prepareStatement(str);
 
         statement.setString(1, typeName);
@@ -209,5 +210,36 @@ public class MovieServiceMysqlImpl implements MovieService {
         }
         connection.close();
         return movies;
+    }
+
+    @Override
+    public List<Map> countByType() throws SQLException {
+        Connection connection = DataConnection.getConnection("mysql");
+        String str = "select count(*) from movie_type, type " +
+                "where type.id=movie_type.type_id and type.name=? or";
+        PreparedStatement statement = connection.prepareStatement(str);
+//
+//        statement.setString(1, typeName);
+//        ResultSet resultSet = statement.executeQuery();
+//
+//        connection.close();
+//        return movies;
+        Map map = new HashMap();
+        List<Map> counts = new ArrayList<>();
+        return counts;
+    }
+
+    @Override
+    public int countByTypeName(String name) throws SQLException {
+        Connection connection = DataConnection.getConnection("mysql");
+        String str = "select count(*) from movie_type join type on type.id=movie_type.typeid where type.name=?";
+        PreparedStatement statement = connection.prepareStatement(str);
+        statement.setString(1, name);
+        ResultSet resultSet = statement.executeQuery();
+
+        resultSet.next();
+        int count = resultSet.getInt(1);
+        connection.close();
+        return count;
     }
 }
