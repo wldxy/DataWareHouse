@@ -1,6 +1,7 @@
 package dataware.service;
 
 import dataware.model.Movie;
+import dataware.util.WordCount;
 import org.springframework.stereotype.Service;
 import dataware.util.DataConnection;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -343,7 +344,7 @@ public class MovieServiceMysqlImpl implements MovieService {
     }
 
     @Override
-    public List<String> findMovieWord(String name) throws SQLException {
+    public List<Map> findMovieWord(String name) throws SQLException {
         Connection connection = DataConnection.getConnection("mysql");
 
         String sql = "select allcomments.text from movie join allcomments on allcomments.productId=movie.code where movie.title=?";
@@ -351,11 +352,28 @@ public class MovieServiceMysqlImpl implements MovieService {
         statement.setString(1, name);
 
         ResultSet resultSet = statement.executeQuery();
+
+        WordCount wordCount = new WordCount();
         while (resultSet.next()) {
-            String title = resultSet.getString(1);
+            String text = resultSet.getString(1);
+            wordCount.addText(text);
+        }
+
+        List<Map> words = new ArrayList<>();
+        List<Map.Entry<String, Integer>> entryList = wordCount.getSortWord();
+        int count = 0;
+        for (Map.Entry<String, Integer> entry : entryList) {
+            count++;
+            if (count > 20) {
+                break;
+            }
+            Map temp = new HashMap();
+            temp.put("word", entry.getKey());
+            temp.put("count", entry.getValue());
+            words.add(temp);
         }
 
         connection.close();
-        return null;
+        return words;
     }
 }

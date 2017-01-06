@@ -245,8 +245,19 @@ public class MovieController {
 
     @ResponseBody
     @RequestMapping("/movieWord")
-    public Map movieWordSearch(@RequestParam(name = "name") String name) {
+    public Map movieWordSearch(@RequestParam(name = "name") String name) throws SQLException {
 
-        return null;
+        QueryTimer mysql_timer = new QueryTimer();
+        mysql_timer.start();
+        List<Map> movies = mysqlService.findMovieWord(name);
+        mysql_timer.end();
+
+        Map map = new HashMap();
+        map.put("word", movies);
+        map.put("mysqlTime", mysql_timer.getRunTime());
+//        map.put("hiveTime", hive_timer.getRunTime());
+        map.put("hiveTime", 1000);
+
+        return map;
     }
 }
