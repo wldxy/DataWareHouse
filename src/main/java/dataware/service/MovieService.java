@@ -20,7 +20,7 @@ public interface MovieService {
 
     List<Movie> findMovieByName(String movieName) throws SQLException;
 
-    List<Movie> findMovieByDirectorName(String directorName) throws SQLException;
+    List<Map> findMovieByDirectorName(String directorName) throws SQLException;
 
 //    List<Movie> findByActorName(String actorName) throws SQLException;
 
@@ -28,7 +28,12 @@ public interface MovieService {
 
     List<Map> findByTypeName(String typeName) throws SQLException;
 
-    List<Map> countByType() throws SQLException;
+    Map countByType(String name) throws SQLException;
 
     int countByTypeName(String name) throws SQLException;
+
+    List<Map> findByMovieInfo(Integer year, Integer month, Integer season, Integer day, String actor,
+                              String director, String type, String name) throws SQLException;
+
+    List<String> findMovieWord(String name) throws SQLException;
 }

@@ -285,7 +285,7 @@ public class MovieServiceHiveImpl implements MovieService {
     }
 
     @Override
-    public List<Movie> findMovieByDirectorName(String directorName) throws SQLException {
+    public List<Map> findMovieByDirectorName(String directorName) throws SQLException {
         Connection connection = DataConnection.getConnection("hive");
         String str = "select movie.title, movie.score from director join movie on director.id = movie.director_id " +
                 "where movie.title=?";
@@ -294,14 +294,14 @@ public class MovieServiceHiveImpl implements MovieService {
         statement.setString(1, directorName);
         ResultSet resultSet = statement.executeQuery();
 
-        List<Movie> movieList = new ArrayList<>();
+        List<Map> movieList = new ArrayList<>();
 
         while (resultSet.next()) {
             String title = resultSet.getString(1);
 //            BigDecimal score = resultSet.getBigDecimal(2);
 //            BigDecimal runTime = resultSet.getBigDecimal(3);
 
-            Movie movie = new Movie();
+            Map movie = new HashMap();
             movieList.add(movie);
         }
         connection.close();
@@ -355,7 +355,7 @@ public class MovieServiceHiveImpl implements MovieService {
     }
 
     @Override
-    public List<Map> countByType() throws SQLException {
+    public Map countByType(String name) throws SQLException  {
         Connection connection = DataConnection.getConnection("hive");
         String str = "select count(*) from movie_type, type " +
                 "where type.id=movie_type.type_id and type.name=? or";
@@ -367,8 +367,7 @@ public class MovieServiceHiveImpl implements MovieService {
 //        connection.close();
 //        return movies;
         Map map = new HashMap();
-        List<Map> counts = new ArrayList<>();
-        return counts;
+        return map;
     }
 
     @Override
@@ -383,5 +382,15 @@ public class MovieServiceHiveImpl implements MovieService {
         int count = resultSet.getInt(1);
         connection.close();
         return count;
+    }
+
+    @Override
+    public List<Map> findByMovieInfo(Integer year, Integer month, Integer season, Integer day, String actor, String director, String type, String name) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public List<String> findMovieWord(String name) {
+        return null;
     }
 }
